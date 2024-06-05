@@ -7,3 +7,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import LeaveOneOut
 
+set1 = glob.glob('data/exp_1/midi/*')
+print(set1)
+
+num_samples = 3
+
+
