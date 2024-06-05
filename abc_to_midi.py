@@ -113,24 +113,44 @@ def parse_abc(file_path):
     for tune in tunes:
         match = tune_re.search(tune)
         if match:
+            body = match.group('body').strip()
+            first_8_bars = extract_first_8_bars(body)
             parsed_tunes.append({
                 'index': match.group('index'),
                 'title': match.group('title'),
-                'body': match.group('body').strip()
+                'body': first_8_bars
             })
 
     return parsed_tunes
 
 
-def print_parsed_tunes(parsed_tunes):
+def extract_first_8_bars(body):
+    bars = body.split('|')
+    if len(bars) > 8:
+        first_8_bars = '|'.join(bars[:8]) + '|'
+    else:
+        first_8_bars = body  # If less than 8 bars, return the whole body
+    return first_8_bars.strip()
+
+
+def save_first_8_bars(parsed_tunes, output_dir):
+    import os
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     for tune in parsed_tunes:
-        print(f"X: {tune['index']}")
-        print(f"T: {tune['title']}")
-        print(f"{tune['body']}\n")
-        print("=" * 40)
+        file_name = f"tune_{tune['index']}_first_8_bars.abc"
+        file_path = os.path.join(output_dir, file_name)
+        with open(file_path, 'w') as file:
+            file.write(f"X:{tune['index']}\n")
+            file.write(f"T:{tune['title']}\n")
+            file.write(f"{tune['body']}\n")
 
 
 if __name__ == "__main__":
-    # file_path = "sample_data/hnair0.abc"
-    # parsed_tunes = parse_abc("sample_data/hnair0.abc")
-    print_parsed_tunes(parse_abc("sample_data/hnair0.abc"))
+    file_path = "path/to/your/abc/file.abc"
+    output_dir = "path/to/output/directory"
+    parsed_tunes = parse_abc(file_path)
+    save_first_8_bars(parsed_tunes, output_dir)
+    print(f"Saved the first 8 bars of each tune to {output_dir}")
+
