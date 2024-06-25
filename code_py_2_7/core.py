@@ -1,3 +1,6 @@
+
+# taken from the mgeval_master repository
+
 # coding:utf-8
 """core.py
 Include feature extractor and musically informed objective measures.
@@ -55,7 +58,7 @@ class metrics(object):
         pattern = feature['midi_pattern']
         pattern.make_ticks_abs()
         resolution = pattern.resolution
-        # todo: added code here:
+        # todo: added code_py_2_7 here:
         note_list = []
         used_notes = []
         bar_length = 1
@@ -138,7 +141,7 @@ class metrics(object):
         pattern.make_ticks_abs()
         resolution = pattern.resolution
 
-        # todo: added code here:
+        # todo: added code_py_2_7 here:
         used_notes = []
         bar_length = 1
 
@@ -352,7 +355,7 @@ class metrics(object):
         'note_length_hist': The output vector has a length of either 12 (or 24 when pause_event is True).
         """
 
-        # todo: added code here:
+        # todo: added code_py_2_7 here:
         bar_length = 1
 
         pattern = feature['midi_pattern']
@@ -457,7 +460,7 @@ class metrics(object):
         'transition_matrix': The output feature dimension is 12 × 12 (or 24 x 24 when pause_event is True).
         """
         pattern = feature['midi_pattern']
-        # todo: added code here:
+        # todo: added code_py_2_7 here:
         bar_length = 1
 
         if pause_event is False:
