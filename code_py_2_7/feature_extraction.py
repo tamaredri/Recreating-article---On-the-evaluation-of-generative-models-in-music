@@ -1,14 +1,13 @@
-#  pip install numpy pretty_midi seaborn matplotlib scikit-learn python-midi music21 re glob os
+
+#  pip install pretty_midi=0.2.8 scikit-learn python-midi=0.2.4 music21
+
 import json
 from argparse import ArgumentParser
-import midi
 import glob
 import copy
 import os
 import numpy as np
-import pretty_midi
 from pprint import pprint
-import pickle
 import core, utils
 from sklearn.model_selection import LeaveOneOut
 

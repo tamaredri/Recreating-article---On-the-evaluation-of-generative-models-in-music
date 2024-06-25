@@ -7,10 +7,7 @@ Include feature extractor and musically informed objective measures.
 """
 import pretty_midi
 import numpy as np
-import sys
-import os
 import midi
-import glob
 import math
 
 
@@ -444,6 +441,7 @@ class metrics(object):
 
     def note_length_transition_matrix(self, feature, track_num=1, normalize=0, pause_event=False):
         """
+
         note_length_transition_matrix (Note length transition matrix):
         Similar to the pitch class transition matrix, the note length tran- sition matrix provides useful information for rhythm description.
 
@@ -457,8 +455,9 @@ class metrics(object):
                       If set to 2, normalize by entire matrix sum.
 
         Returns:
-        'transition_matrix': The output feature dimension is 12 × 12 (or 24 x 24 when pause_event is True).
+        'transition_matrix': The output feature dimension is 12 x 12 (or 24 x 24 when pause_event is True).
         """
+
         pattern = feature['midi_pattern']
         # todo: added code_py_2_7 here:
         bar_length = 1
