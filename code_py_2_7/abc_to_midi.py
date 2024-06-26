@@ -38,24 +38,9 @@ def parse_abc(file_path):
     return parsed_tunes
 
 
-def save_first_8_bars(parsed_tunes, output_dir):
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    for tune in parsed_tunes:
-        file_name = "tune_" + tune['index'] + "_first_8_bars.abc"
-        file_path = os.path.join(output_dir, file_name)
-        with open(file_path, 'w') as file:
-            file.write("X:" + tune['index'] + "\n")
-            file.write("T:" + tune['title'] + "\n")
-            file.write(tune['body'] + "\n")
-
-
 def convert_abc_to_midi(abc_dir, midi_dir):
-    # Create a new directory for the 8-bar ABC files
-    abc_8bar_dir = os.path.join(abc_dir, '8bar')
-    if not os.path.exists(abc_8bar_dir):
-        os.makedirs(abc_8bar_dir)
+    if not os.path.exists(midi_dir):
+        os.makedirs(midi_dir)
 
     # Get all ABC files in the directory
     abc_files = glob.glob(os.path.join(abc_dir, "*.abc"))
@@ -63,21 +48,20 @@ def convert_abc_to_midi(abc_dir, midi_dir):
     # Process each ABC file
     for abc_file in abc_files:
         parsed_tunes = parse_abc(abc_file)
-        save_first_8_bars(parsed_tunes, abc_8bar_dir)
 
-    # Get all 8-bar ABC files
-    abc_8bar_files = glob.glob(os.path.join(abc_8bar_dir, "*.abc"))
-
-    # Convert each 8-bar ABC file to MIDI
-    for abc_file in abc_8bar_files:
-        midi_file = os.path.join(midi_dir, os.path.basename(abc_file).replace('.abc', '.mid'))
-        try:
-            abc_score = converter.parse(abc_file, format='abc')
-            abc_score.write('midi', fp=midi_file)
-            print("Converted {} to {}".format(abc_file, midi_file))
-        except Exception as e:
-            print("Failed to convert {}: {}".format(abc_file, e))
+        # Convert each parsed tune to MIDI
+        for tune in parsed_tunes:
+            abc_content = "X:{}\nT:{}\n{}".format(tune['index'], tune['title'], tune['body'])
+            midi_file = os.path.join(midi_dir, "tune_{}_first_8_bars.mid".format(tune['index']))
+            try:
+                abc_score = converter.parse(abc_content, format='abc')
+                abc_score.write('midi', fp=midi_file)
+                print("Converted {} to {}".format(abc_file, midi_file))
+            except Exception as e:
+                print("Failed to convert {}: {}".format(abc_file, e))
 
 
 if __name__ == "__main__":
-    convert_abc_to_midi("data/exp_1/abc/", "data/exp_1/midi")
+    abc_dirs = ["folk", "jazz"]
+    for abc_dir in abc_dirs:
+        convert_abc_to_midi("../data/exp_1/abc/abc_" + abc_dir, "../data/exp_1/midi/midi_" + abc_dir)

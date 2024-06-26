@@ -74,7 +74,7 @@ single_arg_metrics = (
         , 'avg_IOI'
         , 'total_pitch_class_histogram'
         , 'pitch_range'
-        , 'total_used_note'
+        # , 'total_used_note'
      ])
 
 set1_eval = copy.deepcopy(evalset)
@@ -90,10 +90,7 @@ for _set, _set_eval in sets:
             print(metric)
             evaluator = getattr(core.metrics(), metric)
             if metric in single_arg_metrics:
-                if metric == 'total_used_note':
-                    tmp = evaluator(feature, len(feature["midi_pattern"]) - 1)
-                else:
-                    tmp = evaluator(feature)
+                tmp = evaluator(feature)
             elif metric in bar_metrics:
                 # print(metric)
                 tmp = evaluator(feature, 0, args.num_bar)
@@ -104,7 +101,7 @@ for _set, _set_eval in sets:
 
 loo = LeaveOneOut()
 loo.get_n_splits(np.arange(num_samples))
-set1_intra = np.zeros((num_samples, len(metrics_list), num_samples - 1))
+set1_intra = np.zeros((num_samples, len(metrics_list), num_samples - 1))    # 19 x 12 x 18
 set2_intra = np.zeros((num_samples, len(metrics_list), num_samples - 1))
 
 # Calculate Intra-set Metrics
@@ -121,7 +118,7 @@ sets_inter = np.zeros((num_samples, len(metrics_list), num_samples))
 
 # Calculate Inter-set Metrics
 for i, metric in enumerate(metrics_list):
-    for train_index, test_index in loo.split(np.arange(num_samples)):
+    for _, test_index in loo.split(np.arange(num_samples)):
         sets_inter[test_index[0]][i] = utils.c_dist(set1_eval[metric][test_index], set2_eval[metric])
 
 plot_set1_intra = np.transpose(
@@ -135,8 +132,17 @@ output = {}
 for i, metric in enumerate(metrics_list):
     print('calculating kl of: {}'.format(metric))
 
-    mean = np.mean(set1_eval[metric], axis=0).tolist()
-    std = np.std(set1_eval[metric], axis=0).tolist()
+    mean1 = np.mean(set1_eval[metric], axis=0).tolist()
+    std1 = np.std(set1_eval[metric], axis=0).tolist()
+
+    mean2 = np.mean(set2_eval[metric], axis=0).tolist()
+    std2 = np.std(set2_eval[metric], axis=0).tolist()
+
+    mean_intra1 = np.mean(plot_set1_intra[i], axis=0).tolist()
+    std_intra1 = np.std(plot_set1_intra[i], axis=0).tolist()
+
+    mean_intra2 = np.mean(plot_set2_intra[i], axis=0).tolist()
+    std_intra2 = np.std(plot_set2_intra[i], axis=0).tolist()
 
     print(metric)
     pprint(plot_set1_intra[i])
@@ -150,7 +156,9 @@ for i, metric in enumerate(metrics_list):
 
     print(kl1)
     print(kl2)
-    output[metric] = [mean, std, kl1, ol1, kl2, ol2]
+    output[metric] = [mean1, std1, mean2, std2,
+                      mean_intra1, std_intra1, mean_intra2, std_intra2,
+                      kl1, ol1, kl2, ol2]
 
 # Save output
 if os.path.exists(args.outfile):
