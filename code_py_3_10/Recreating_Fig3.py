@@ -1,18 +1,12 @@
-# pip install pandas seaborn matplotlib.pyplot openpyxl
-
 import json
-
-with open('../data/exp_1/measurments_results/results.json', 'r') as file:
-    # Parse the JSON file into a Python dictionary or list
-    data = json.load(file)
-
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Sample 12x12 matrix
-# matrix = np.random.rand(12, 12)
+# Read the JSON file
+with open('../data/exp_1/measurments_results/Feature_extraction_results.json', 'r') as file:
+    data = json.load(file)
 
 # Sample cell names
 notes = [
@@ -25,37 +19,34 @@ notes = [
     '𝅘𝅥.',  # Dotted Quarter Note
     '𝅘𝅥𝅮.',  # Dotted Eighth Note
     '𝅘𝅥𝅯.',  # Dotted Sixteenth Note
-    '𝅗𝅥 𝅗𝅥 𝅗𝅥',  # (Triplet Half Notes, indicated by "3" above/below)
-    '𝅘𝅥 𝅘𝅥 𝅘𝅥',  # (Triplet Quarter Notes, indicated by "3" above/below)
-    '𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮'  # (Triplet Eighth Notes, indicated by "3" above/below)
+    '𝅗𝅥 𝅗𝅥 𝅗𝅥',  # Triplet Half Notes
+    '𝅘𝅥 𝅘𝅥 𝅘𝅥',  # Triplet Quarter Notes
+    '𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮'  # Triplet Eighth Notes
 ]
 
 # Convert to Pandas DataFrame for better control
-df1 = pd.DataFrame(data['pitch_class_transition_matrix'][0], index=notes, columns=notes) # set 1
-df2 = pd.DataFrame(data['pitch_class_transition_matrix'][2], index=notes, columns=notes) # set 2
+df1 = pd.DataFrame(data['pitch_class_transition_matrix'][0], index=notes, columns=notes)  # Set 1
+df2 = pd.DataFrame(data['pitch_class_transition_matrix'][2], index=notes, columns=notes)  # Set 2
 
-# Plot the heatmap
-plt.figure(figsize=(10, 8))
-sns.heatmap(df1, annot=True, cmap='viridis')
+# Create a single figure with two subplots side by side
+fig, axes = plt.subplots(1, 2, figsize=(20, 8))
 
-# Customize plot
-plt.title('Folk')
-plt.xlabel('Columns')
-plt.ylabel('Rows')
+# Plot the first heatmap
+sns.heatmap(df1, annot=True, cmap='viridis', ax=axes[0])
+axes[0].set_title('Folk')
+axes[0].set_xlabel('Columns')
+axes[0].set_ylabel('Rows')
 
-# Display the heatmap
-plt.show()
+# Plot the second heatmap
+sns.heatmap(df2, annot=True, cmap='viridis', ax=axes[1])
+axes[1].set_title('Jazz')
+axes[1].set_xlabel('Columns')
+axes[1].set_ylabel('Rows')
 
+# Adjust layout
+plt.tight_layout()
 
-# Plot the heatmap
-plt.figure(figsize=(10, 8))
-sns.heatmap(df2, annot=True, cmap='viridis')
+# Save the figure to a PNG file
+plt.savefig('../data/exp_1/measurments_results/Fig3_Section4.1.png')
 
-# Customize plot
-plt.title('Jazz')
-plt.xlabel('Columns')
-plt.ylabel('Rows')
-
-# Display the heatmap
-plt.show()
-
+print("The heatmaps have been saved to 'heatmaps.png'.")
