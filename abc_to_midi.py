@@ -3,32 +3,113 @@ import re
 import os
 import glob
 
-failed = []
+import requests
+import zipfile
 
 
-def extract_first_8_bars(body):
-    bars = body.split('|')
-    if len(bars) > 8:
-        first_8_bars = '|'.join(bars[:8]) + '|'
-    else:
-        first_8_bars = body  # If less than 8 bars, return the whole body
-    return first_8_bars.strip()
+def get_abc_file():
+    # Download the ZIP file from Henrik Norbeck's ABC Tunes website
+    url = "https://www.norbeck.nu/abc/henrikabc.zip"
+    r = requests.get(url)
+    zip_path = "henrikabc.zip"
+
+    with open(zip_path, "wb") as f:
+        f.write(r.content)
+
+    # Extract the ZIP file
+    with zipfile.ZipFile(zip_path, "r") as zip_ref:
+        zip_ref.extractall("henrikabc")
+
+    # List files in the extracted directory
+    os.listdir("henrikabc")
 
 
-def parse_abc(abc_file_path):
+def single_abc():
+    # Example ABC notation as a string
+    abc_string = """
+    R:air
+    B:Goodman manuscripts, http://port.itma.ie/score/ITMA_1401
+    Z:id:hn-air-31
+    M:3/4
+    L:1/8
+    K:Am
+    A/B/c/d/ | e2 ea ge | dc B2 AF | A2 G2 A/B/c/d/ | d2 d2 fe | dc A2 GB | A4
+    A/B/c/d/ | e2 ea ge | dc B2 AG | G2 G2 A/B/c/d/ | d2 d2 (3fed | dc A2 G2 | A4 ||
+    eg | a2 a2 (3baf | ge d2 dc | B2 A2 eg | a2 a2 ba | ge d2 ea | g4
+    Bd | e2 ea ge | ge d2 BA | A2 G2 A/B/c/d/ | d2 d2 gf | ed B2 G2 | A4 :|
+    """
 
-    # 1. read the file with 100 abc_folk tunes
-    with open(abc_file_path, 'r') as file:
+    # Parse the ABC notation
+    abc_score = converter.parse(abc_string, format='abc')
+
+    # Save the parsed ABC as a MIDI file
+    abc_score.write('midi', fp='simple_tune_1.mid')
+
+    # Print a message to confirm the conversion
+    print("MIDI file created successfully.")
+
+
+def multiple_abc():
+    # Create a directory for ABC files (for demonstration purposes, this directory should already contain your ABC files)
+    os.makedirs("abc_files", exist_ok=True)
+
+    # Sample code to simulate having ABC files in the directory
+    # In practice, you should have actual ABC files downloaded from a reliable source
+    sample_abc_content = """
+    X: 1
+    T: Simple Tune
+    M: 4/4
+    L: 1/8
+    K: C
+    CDEFGABc | cBAGFEDC |
+    """
+    with open("abc_files/sample1.abc", "w") as f:
+        f.write(sample_abc_content)
+    with open("abc_files/sample2.abc", "w") as f:
+        f.write(sample_abc_content)
+
+    # Directory containing the ABC files
+    abc_dir = "abc_files"
+    midi_dir = "midi_files"
+
+    # Create directory to save MIDI files
+    os.makedirs(midi_dir, exist_ok=True)
+
+    # Get all ABC files in the directory
+    abc_files = glob.glob(os.path.join(abc_dir, "*.abc"))
+
+    # Function to convert ABC to MIDI
+    def convert_abc_to_midi(abc_file, midi_file):
+        try:
+            abc_score = converter.parse(abc_file, format='abc')
+            abc_score.write('midi', fp=midi_file)
+            print(f"Converted {abc_file} to {midi_file}")
+        except Exception as e:
+            print(f"Failed to convert {abc_file}: {e}")
+
+    # Convert each ABC file to MIDI
+    for abc_file in abc_files:
+        midi_file = os.path.join(midi_dir, os.path.basename(abc_file).replace('.abc', '.mid'))
+        convert_abc_to_midi(abc_file, midi_file)
+
+    print("Conversion completed.")
+
+    # Zip the MIDI files directory
+    import shutil
+    shutil.make_archive("midi_files", 'zip', midi_dir)
+
+
+def parse_abc(file_path):
+    with open(file_path, 'r') as file:
         content = file.read()
 
-    # 2. Split the file into tunes based on "X:" which denotes the start of a tune
+    # Split the file into tunes based on "X:" which denotes the start of a tune
     tunes = content.split('\nX:')
     tunes = ['X:' + tune if not tune.startswith('X:') else tune for tune in tunes]
 
     parsed_tunes = []
     tune_re = re.compile(r'X:(?P<index>\d+)\s*T:(?P<title>[^\n]+)\s*(?P<body>.*?)\n(?=X:|\Z)', re.DOTALL)
 
-    # 3. save in parsed_tunes the first 8 bars for each tune
     for tune in tunes:
         match = tune_re.search(tune)
         if match:
@@ -43,60 +124,33 @@ def parse_abc(abc_file_path):
     return parsed_tunes
 
 
-def save_abc_tunes(parsed_tunes, abc_dir_path):
-    if not os.path.exists(abc_dir_path):
-        os.makedirs(abc_dir_path)
+def extract_first_8_bars(body):
+    bars = body.split('|')
+    if len(bars) > 8:
+        first_8_bars = '|'.join(bars[:8]) + '|'
+    else:
+        first_8_bars = body  # If less than 8 bars, return the whole body
+    return first_8_bars.strip()
+
+
+def save_first_8_bars(parsed_tunes, output_dir):
+    import os
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     for tune in parsed_tunes:
-        abc_file_name = f"tune_{tune['index']}_first_8_bars.abc_folk"
-        abc_file_path = os.path.join(abc_dir_path, abc_file_name)
-        with open(abc_file_path, 'w') as file:
+        file_name = f"tune_{tune['index']}_first_8_bars.abc"
+        file_path = os.path.join(output_dir, file_name)
+        with open(file_path, 'w') as file:
             file.write(f"X:{tune['index']}\n")
             file.write(f"T:{tune['title']}\n")
             file.write(f"{tune['body']}\n")
 
 
-def convert_abc_to_midi(abc_file, midi_file):
-    global failed
-    try:
-        abc_score = converter.parse(abc_file, format='abc_folk')
-        abc_score.write('midi_folk', fp=midi_file)
-        print(f"\nConverted {abc_file} to {midi_file}", end='')
-    except Exception as e:
-        print(f"\nFailed to convert {abc_file}: {e}", end='')
-        failed += [abc_file]
-
-
-def convert_multiple_abc_to_midi(abc_dir_path, midi_dir_path):
-
-    # Get all ABC files in the directory
-    abc_files = glob.glob(os.path.join(abc_dir_path, "*.abc_folk"))
-
-    if not os.path.exists(midi_dir_path):
-        os.makedirs(midi_dir_path)
-
-    # Convert each ABC file to MIDI
-    for abc_file in abc_files:
-        midi_file = os.path.join(midi_dir_path, os.path.basename(abc_file).replace('.abc_folk', '.mid'))
-        convert_abc_to_midi(abc_file, midi_file)
-
-
 if __name__ == "__main__":
-    # 1 extract 100 abc_folk file from abc_collection and extract only first 8 bars from each abc_folk tune
-    print("1. extract 100 abc_folk file from abc_collection", end='')
-    parsed_abc_tunes = parse_abc("abc_collection.abc")
-    print("---end\n")
-
-    # 2. save list of abc_folk tune to abc_folk file
-    print("2. Saved the first 8 bars of each tune to abc_folk dir", end='')
-    save_abc_tunes(parsed_abc_tunes, "abc_folk")
-    print("---end\n")
-
-    # 3. convert abc_folk files (from abc_folk directory) to midi_folk files
-    print("3. convert abc_folk files to midi_folk files", end='')
-    convert_multiple_abc_to_midi("abc_folk", "midi_folk")
-    print("---end\n")
-    print(failed)
-
-
+    file_path = "path/to/your/abc/file.abc"
+    output_dir = "path/to/output/directory"
+    parsed_tunes = parse_abc(file_path)
+    save_first_8_bars(parsed_tunes, output_dir)
+    print(f"Saved the first 8 bars of each tune to {output_dir}")
 
