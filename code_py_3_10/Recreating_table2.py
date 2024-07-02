@@ -3,7 +3,7 @@ import numpy as np
 
 import json
 
-with open('../data/exp_1/measurments_results/Feature_extraction_results.json', 'r') as file:
+with open('../data/exp_1/measurments_results/Feature_extraction_results_section_4_1.json', 'r') as file:
     # Parse the JSON file into a Python dictionary or list
     data = json.load(file)
 
@@ -30,10 +30,10 @@ def reorder_and_handle_numpy(values):
     reordered_values = []
     for i in reorder_indices:
         value = values[i]
-        if isinstance(value, list):
-            value = np.array(value)
-        if isinstance(value, np.ndarray):
-            reordered_values.append(np.mean(value))
+        if isinstance(value, list) and len(value) == 1:
+            reordered_values.append(value[0])
+        elif isinstance(value, list):
+            reordered_values.append('-')
         else:
             reordered_values.append(value)
     return reordered_values

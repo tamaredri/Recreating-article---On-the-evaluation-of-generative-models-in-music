@@ -62,6 +62,35 @@ def convert_abc_to_midi(abc_dir, midi_dir):
 
 
 if __name__ == "__main__":
-    abc_dirs = ["folk", "jazz"]
+    abc_dirs = [ "jazz"]
     for abc_dir in abc_dirs:
         convert_abc_to_midi("../data/exp_1/abc/abc_" + abc_dir, "../data/exp_1/midi/midi_" + abc_dir)
+
+
+
+"""
+
+
+X:7
+T:Groovin' high
+M:4/4
+L:1/8
+C:Dizzy Gillespie
+Q:1/4=160
+K:Eb
+%%text (medium)
+%%vskip 20
+% A %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+P:A
+_c=A || "Ebmaj7"BGz2 z4 | BGz2 z4 | "Am7"z=E=Ac =BA^GE | "D7"=GF^Fd- d4c=A |
+"Ebmaj7"BGz2 z4 | BGz2 z4 | "Gm7"zDGB =AG^FD | "C7"=F^D=Ec- c2 B^G ||
+P:B
+"F7"=AFz2 z4 | (3=ABA F2 z2 | "Fm7"zCF_A GF=EC | "Bb7"_E^CDB- B2A^F |
+"Gm7"GBdf-f2df | "Gbm7"(3=e_ed _d4 z4 | "Fm7"FAce-e2ce | "Bb7"(3d_dc _c2 z2 c/_d/c/=A/ ||
+P:A
+"Ebmaj7"BGz2 z4 | BGz2 z4 | "Am7"z=E=Ac =BA^GE | "D7"=GF^Fd- d4c=A |
+"Ebmaj7"BGz2 z4 | BGz2 z4 | "Gm7"zDGB =AG^FD | "C7"=F^D=Ec- c2 B^G ||
+P:C
+"F7"=AFz2 z4 | (3=ABA F2 z2 | "Fm7"zCF_A GF=EC | "Bb7"_E^CDB- B2A=E |
+"Fm7"F2FG AGF2 | "Abm7"A2AB _cBAe | "Eb6"z8 | "T.A."z8 |]
+"""

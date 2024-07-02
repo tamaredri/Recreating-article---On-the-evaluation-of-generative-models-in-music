@@ -11,6 +11,7 @@ from pprint import pprint
 import core, utils
 from sklearn.model_selection import LeaveOneOut
 
+
 parser = ArgumentParser()
 parser.add_argument('--set1dir', required=True, type=str,
                     help='Path (absolute) to the first dataset (folder)')
@@ -82,9 +83,13 @@ set2_eval = copy.deepcopy(evalset)
 
 sets = [(set1, set1_eval), (set2, set2_eval)]
 
+j = "1"
 # Extract Fetures
 for _set, _set_eval in sets:
+    print("set " + j)
+    j = "2"
     for i in range(0, num_samples):
+        print("sample " + str(i))
         feature = core.extract_feature(_set[i])
         for metric in metrics_list:
             print(metric)
@@ -154,8 +159,8 @@ for i, metric in enumerate(metrics_list):
     kl2 = utils.kl_dist(plot_set2_intra[i], plot_sets_inter[i])
     ol2 = utils.overlap_area(plot_set2_intra[i], plot_sets_inter[i])
 
-    print(kl1)
-    print(kl2)
+    # print(kl1)
+    # print(kl2)
     output[metric] = [mean1, std1, mean2, std2,
                       mean_intra1, std_intra1, mean_intra2, std_intra2,
                       kl1, ol1, kl2, ol2]
