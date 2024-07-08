@@ -83,13 +83,9 @@ set2_eval = copy.deepcopy(evalset)
 
 sets = [(set1, set1_eval), (set2, set2_eval)]
 
-j = "1"
 # Extract Fetures
 for _set, _set_eval in sets:
-    print("set " + j)
-    j = "2"
     for i in range(0, num_samples):
-        print("sample " + str(i))
         feature = core.extract_feature(_set[i])
         for metric in metrics_list:
             print(metric)
@@ -134,6 +130,13 @@ plot_sets_inter = np.transpose(
     sets_inter, (1, 0, 2)).reshape(len(metrics_list), -1)
 
 output = {}
+pdf_distance_output = {
+    'set1': {metric: [] for metric in metrics_list},
+    'set2': {metric: [] for metric in metrics_list}
+}
+
+
+output = {}
 for i, metric in enumerate(metrics_list):
     print('calculating kl of: {}'.format(metric))
 
@@ -143,11 +146,9 @@ for i, metric in enumerate(metrics_list):
     mean2 = np.mean(set2_eval[metric], axis=0).tolist()
     std2 = np.std(set2_eval[metric], axis=0).tolist()
 
-    mean_intra1 = np.mean(plot_set1_intra[i], axis=0).tolist()
-    std_intra1 = np.std(plot_set1_intra[i], axis=0).tolist()
-
-    mean_intra2 = np.mean(plot_set2_intra[i], axis=0).tolist()
-    std_intra2 = np.std(plot_set2_intra[i], axis=0).tolist()
+    mean_intra1, std_intra1 = utils.pdf_mean_std(plot_set1_intra[i])
+    mean_intra2, std_intra2 = utils.pdf_mean_std(plot_set2_intra[i])
+    mean_sets_inter, std_sets_inter = utils.pdf_mean_std(plot_sets_inter[i])
 
     print(metric)
     pprint(plot_set1_intra[i])
@@ -159,18 +160,35 @@ for i, metric in enumerate(metrics_list):
     kl2 = utils.kl_dist(plot_set2_intra[i], plot_sets_inter[i])
     ol2 = utils.overlap_area(plot_set2_intra[i], plot_sets_inter[i])
 
-    # print(kl1)
-    # print(kl2)
+    # The PDF of the intra-set distances
+    intra_set1_pdf, _ = utils.intra_set_pdf(plot_set1_intra[i])
+    intra_set2_pdf, _ = utils.intra_set_pdf(plot_set2_intra[i])
+    for item in intra_set1_pdf:
+        pdf_distance_output["set1"][metric].append(item)
+    for item in intra_set2_pdf:
+        pdf_distance_output["set2"][metric].append(item)
+
+    print(kl1)
+    print(kl2)
     output[metric] = [mean1, std1, mean2, std2,
                       mean_intra1, std_intra1, mean_intra2, std_intra2,
                       kl1, ol1, kl2, ol2]
+
+    if metric == 'pitch_class_transition_matrix':
+        output[metric].append([])
+        for tune in set2_eval[metric]:
+            output[metric][12].append(tune.tolist())
+
 
 # Save output
 if os.path.exists(args.outfile):
     os.remove(args.outfile)
 
 output_file = open(args.outfile, 'w')
-json.dump(output, output_file)
+json.dump(output, output_file, indent=4)
 output_file.close()
+
+with open('../data/exp_1/measurments_results/PDF_distances.json', 'w') as json_file:
+    json.dump(pdf_distance_output, json_file, indent=4)
 
 print('Saved output to file: ' + args.outfile)
