@@ -1,0 +1,1 @@
+Here you will store all the Folk and Jazz song files in an abc format, in 2 separate folders.
