@@ -31,20 +31,14 @@ def kl_dist(A, B, num_sample=1000):
 
 
 def pdf_mean_std(A, num_sample=1000):
-    # Create KDE for the data
     pdf_A = stats.gaussian_kde(A)
-    # Generate sample points
     sample_points = np.linspace(np.min(A), np.max(A), num_sample)
-    # Evaluate the KDE at the sample points
     pdf_values = pdf_A(sample_points)
 
-    # Calculate mean of the KDE
     mean = np.sum(sample_points * pdf_values) / np.sum(pdf_values)
 
-    # Calculate variance of the KDE
     variance = np.sum((sample_points - mean) ** 2 * pdf_values) / np.sum(pdf_values)
     std_dev = np.sqrt(variance)
-
     return mean, std_dev
 
 
