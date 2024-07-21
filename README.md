@@ -1,7 +1,7 @@
 # Recreating-article---On-the-evaluation-of-generative-models-in-music
 Tamar Edri & Reut Marmerosh
 
-##Steps for recreating the article:
+Steps for recreating the article:
 ### EXP1:
 1. Download the Folk & Jazz songs in ABC format from - https://www.norbeck.nu/abc/download.asp and https://trillian.mit.edu/~jc/cgi/abc/find.cgi?P=jazz&find=FIND&m=title&W=wide&scale=0.65&limit=1000&thresh=5&fmt=single&V=1&Tsel=tune&Nsel=0 accordingly.
 2. Run the 'code_py_2_7/abc_to_midi.py' to convert the songs into MID files.
