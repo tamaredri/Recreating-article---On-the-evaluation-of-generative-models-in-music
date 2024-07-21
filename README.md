@@ -22,6 +22,6 @@ We were unable to run the code from the official repositories provided for those
 - MidiNet Model - https://github.com/RichardYang40148/MidiNet
 - MuesGan Model - https://github.com/salu133445/musegan
 
-#Plotting the results
+### Plotting the results
 The directory 'code_3_10' contains scripts that, given the feature extraction results, can generate the plots from the article.
 Since we do not have the MidiNet results, we were only able to run Recreating_table2.py and Recreating_Fig3.py.
