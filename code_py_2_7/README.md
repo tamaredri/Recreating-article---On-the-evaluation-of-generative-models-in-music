@@ -1,10 +1,10 @@
 # Directory for code using Python 2.7.18
 
-###This repository contains the following scripts:
+### This repository contains the following scripts:
 1. Conversion from ABC to MID files
 2. Performing the process of feature extraction
 
-##Dependencies
+## Dependencies
 * python 2.7
 * pretty_midi=0.2.8 
 * scikit-learn 
