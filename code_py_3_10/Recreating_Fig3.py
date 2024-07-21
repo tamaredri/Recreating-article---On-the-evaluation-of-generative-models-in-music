@@ -6,12 +6,14 @@ import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
 from matplotlib.backends.backend_pdf import PdfPages
 
+# ################ exp 3 #################### #
+
 
 def plot_fig3_collection(collection_metric_data, metric_acronyms, tick_names, font=None):
 
     c_tunes = []
     prop = FontProperties()
-    if font:  # define a font to present the notes
+    if font:
         prop = FontProperties(family='Musisync-KVLZ', fname=font)
 
     with PdfPages('../data/exp_1/measurments_results/Fig3_foreach_tune_Section4.1_' + metric_acronyms + '.pdf') as pdf:
@@ -23,7 +25,7 @@ def plot_fig3_collection(collection_metric_data, metric_acronyms, tick_names, fo
                 c_tunes.append(index)
             np_jazz = (np_jazz / np_jazz.max()) * 0.05
 
-            df = pd.DataFrame(np_jazz, index=tick_names, columns=tick_names)  # Set 2
+            df = pd.DataFrame(np_jazz, index=tick_names, columns=tick_names)
 
             fig, ax = plt.subplots(figsize=(10, 8))
 
@@ -37,7 +39,7 @@ def plot_fig3_collection(collection_metric_data, metric_acronyms, tick_names, fo
                 else:
                     label.set_fontsize(20)
             for label in ax.get_yticklabels():
-                label.set_rotation(0)  # Set y-tick labels to horizontal
+                label.set_rotation(0)
                 if font:
                     label.set_fontproperties(prop)
                     label.set_fontsize(40)
@@ -50,9 +52,9 @@ def plot_fig3_collection(collection_metric_data, metric_acronyms, tick_names, fo
             else:
                 fig.suptitle(f"{metric_acronyms} - Index {index} | metric_data[0][0] = {metric_data[0][0]}", fontsize=20)
 
-            plt.tight_layout()  # Leave space for the main title
-            pdf.savefig(fig)  # Save the current figure into the PDF
-            plt.close(fig)  # Close the figure to free memory
+            plt.tight_layout()
+            pdf.savefig(fig)
+            plt.close(fig)
 
     print(f"All heatmaps have been saved to ../data/exp_1/measurments_results.")
     print(f"c_tunes: {c_tunes}")
@@ -60,7 +62,6 @@ def plot_fig3_collection(collection_metric_data, metric_acronyms, tick_names, fo
 
 # Sample cell names
 def plot_fig3(metric_data, metric_acronyms, tick_names, font=None):
-    # Convert to Pandas DataFrame for better control
 
     # normalizing the values
     np_1 = np.array(metric_data[0])
@@ -73,7 +74,7 @@ def plot_fig3(metric_data, metric_acronyms, tick_names, font=None):
     df2 = pd.DataFrame(np_2, index=tick_names, columns=tick_names)  # Set 2
 
     prop = FontProperties()
-    if font:  # define a font to present the notes
+    if font:
         prop = FontProperties(family='Musisync-KVLZ', fname=font)
 
     fig, axes = plt.subplots(1, 2, figsize=(20, 8))
@@ -92,7 +93,7 @@ def plot_fig3(metric_data, metric_acronyms, tick_names, font=None):
             else:
                 label.set_fontsize(20)
         for label in ax.get_yticklabels():
-            label.set_rotation(0)  # Set y-tick labels to horizontal
+            label.set_rotation(0)
             if font:
                 label.set_fontproperties(prop)
                 label.set_fontsize(40)

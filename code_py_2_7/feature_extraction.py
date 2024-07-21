@@ -132,7 +132,8 @@ plot_sets_inter = np.transpose(
 output = {}
 pdf_distance_output = {
     'set1': {metric: [] for metric in metrics_list},
-    'set2': {metric: [] for metric in metrics_list}
+    'set2': {metric: [] for metric in metrics_list},
+    'sets': {metric: [] for metric in metrics_list}
 }
 
 
@@ -161,23 +162,25 @@ for i, metric in enumerate(metrics_list):
     ol2 = utils.overlap_area(plot_set2_intra[i], plot_sets_inter[i])
 
     # The PDF of the intra-set distances
-    intra_set1_pdf, _ = utils.intra_set_pdf(plot_set1_intra[i])
-    intra_set2_pdf, _ = utils.intra_set_pdf(plot_set2_intra[i])
-    for item in intra_set1_pdf:
-        pdf_distance_output["set1"][metric].append(item)
-    for item in intra_set2_pdf:
-        pdf_distance_output["set2"][metric].append(item)
+    intra_set1_pdf_val, intra_set1_pdf_samples = utils.intra_set_pdf(plot_set1_intra[i])
+    intra_set2_pdf_val, intra_set2_pdf_samples = utils.intra_set_pdf(plot_set2_intra[i])
+    inter_sets_pdf_val, inter_sets_pdf_samples = utils.intra_set_pdf(plot_sets_inter[i])
+
+    pdf_distance_output["set1"][metric] = [intra_set1_pdf_val.tolist(), intra_set1_pdf_samples.tolist()]
+    pdf_distance_output["set2"][metric] = [intra_set2_pdf_val.tolist(), intra_set2_pdf_samples.tolist()]
+    pdf_distance_output["sets"][metric] = [inter_sets_pdf_val.tolist(), inter_sets_pdf_samples.tolist()]
 
     print(kl1)
     print(kl2)
     output[metric] = [mean1, std1, mean2, std2,
                       mean_intra1, std_intra1, mean_intra2, std_intra2,
+                      mean_sets_inter, std_sets_inter,
                       kl1, ol1, kl2, ol2]
 
-    if metric == 'pitch_class_transition_matrix':
+    '''if metric == 'pitch_class_transition_matrix':
         output[metric].append([])
         for tune in set2_eval[metric]:
-            output[metric][12].append(tune.tolist())
+            output[metric][14].append(tune.tolist())'''
 
 
 # Save output
