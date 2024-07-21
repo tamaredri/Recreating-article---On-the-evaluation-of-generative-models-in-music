@@ -29,7 +29,7 @@ seconds_per_step = 60.0 / qpm / melody_rnn.steps_per_quarter
 total_seconds = num_steps * seconds_per_step
 
 # Create directory to store generated samples
-output_dir = '../data/exp_2/magenta/generated_samples'
+output_dir = '../../data/exp_2/magenta/generated_samples'
 os.makedirs(output_dir, exist_ok=True)
 
 # Generate 100 samples
