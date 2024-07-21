@@ -1,10 +1,10 @@
 # Directory for code using Python 3.7
 
-###This repository contains the following scripts:
+### This repository contains the following scripts:
 1. Magenta - music generation model
 2. TheoryTab crawler
 
-##Dependencies
+## Dependencies
 * Pillow==9.5.0	
 * beautifulsoup4==4.12.3	
 * fonttools==4.38.0	
@@ -20,11 +20,11 @@
 * urllib3==1.26.15	
 
 
-##Magenta
+## Magenta
 - The code requires the prebuilt model - 'lookback_rnn.mag', and the first bar of a song - 'song_name.mid'.
 - The results will be stored in a 'generated_samples' folder in the 'Magenta' directory.
 
-##TheoryTab crawler
+## TheoryTab crawler
 - The code requires xml files containing songs representation from the theorytab website, 
 stored in 'hooktheory-data\xml\' folder.
 - Then, run the code in 'convert_xml_to_leed_sheet_format.py' that converts the list of xml files to the file system expected in 'main.py'
