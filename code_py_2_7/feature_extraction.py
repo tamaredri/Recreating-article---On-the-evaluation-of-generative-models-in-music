@@ -136,8 +136,6 @@ pdf_distance_output = {
     'sets': {metric: [] for metric in metrics_list}
 }
 
-
-output = {}
 for i, metric in enumerate(metrics_list):
     print('calculating kl of: {}'.format(metric))
 
@@ -177,11 +175,6 @@ for i, metric in enumerate(metrics_list):
                       mean_sets_inter, std_sets_inter,
                       kl1, ol1, kl2, ol2]
 
-    '''if metric == 'pitch_class_transition_matrix':
-        output[metric].append([])
-        for tune in set2_eval[metric]:
-            output[metric][14].append(tune.tolist())'''
-
 
 # Save output
 if os.path.exists(args.outfile):
@@ -191,7 +184,7 @@ output_file = open(args.outfile, 'w')
 json.dump(output, output_file, indent=4)
 output_file.close()
 
-with open('../data/exp_1/measurments_results/PDF_distances.json', 'w') as json_file:
+with open(args.outPdfFile, 'w') as json_file:
     json.dump(pdf_distance_output, json_file, indent=4)
 
 print('Saved output to file: ' + args.outfile)
