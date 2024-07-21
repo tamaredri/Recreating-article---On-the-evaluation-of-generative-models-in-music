@@ -3,7 +3,6 @@ import note_seq
 from magenta.models.melody_rnn import melody_rnn_sequence_generator
 from magenta.models.shared import sequence_generator_bundle
 from note_seq.protobuf import generator_pb2
-from note_seq.protobuf import music_pb2
 import os
 
 # Initialize the model
@@ -30,7 +29,7 @@ seconds_per_step = 60.0 / qpm / melody_rnn.steps_per_quarter
 total_seconds = num_steps * seconds_per_step
 
 # Create directory to store generated samples
-output_dir = 'generated_samples'
+output_dir = '../data/exp_2/magenta/generated_samples'
 os.makedirs(output_dir, exist_ok=True)
 
 # Generate 100 samples
